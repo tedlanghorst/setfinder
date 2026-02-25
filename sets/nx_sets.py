@@ -276,42 +276,52 @@ class Sets:
         self,
         inversion_sets: dict,
         output_dir: str,
-        sword_file: str,
-        sos_file: str,
         expanded: bool = False,
     ) -> list[int]:
-        """
-        Serialise inversion_sets to a JSON file and return all reach IDs.
-
-        Parameters
-        ----------
-        sword_file : str   path to the SWORD file (written into each record)
-        sos_file   : str   path to the SOS file   (written into each record)
-        """
+        """Serialize inversion_sets to a JSON file and return all reach IDs."""
         prefix = "expanded_" if expanded else ""
         out_path = os.path.join(output_dir, prefix + self.params["Filename"])
 
-        payload = []
-        all_reaches = []
-        for iset in inversion_sets.values():
-            group = []
-            for rid in iset["ReachList"]:
-                all_reaches.append(rid)
-                group.append(
-                    {
-                        "reach_id": int(rid),
-                        "sword": sword_file,
-                        "swot": f"{rid}_SWOT.nc",
-                        "sos": sos_file,
-                    }
-                )
-            payload.append(group)
+        # Extract required file paths from the reaches attribute
+        swordfile = self.reaches[0]['sword']
+        sosfile = self.reaches[0]['sos']
+        
+        # Utilize helper method for data structure generation
+        InversionSetsWrite, all_reaches = self.get_IS_list(inversion_sets, swordfile, sosfile, 'writing')
 
-        with open(out_path, "w") as fh:
-            json.dump(payload, fh, indent=2)
-        print(f"    File written: {out_path}")
+        with open(out_path, 'w') as json_file:
+            json.dump(InversionSetsWrite, json_file, indent=2)
+            print(f"    File written: {out_path}")
 
         return all_reaches
+    
+    def get_IS_list(self, InversionSets, swordfile, sosfile, mode):
+        """
+        Constructs the nested list structure for inversion set serialization.
+        Restores the 'remove_dupes' mode functionality and origin reach tracking.
+        """
+        InversionSetsList = []
+        all_reaches = []
+
+        for IS in InversionSets:
+            InversionSetWrite = []
+            for reach in InversionSets[IS]['ReachList']:
+                all_reaches.append(reach)
+                reachdict = {
+                    'reach_id': int(reach),
+                    'sword': swordfile,
+                    'swot': f"{reach}_SWOT.nc",
+                    'sos': sosfile
+                }
+                
+                # Restore conditional data inclusion based on mode
+                if mode == 'remove_dupes':
+                    reachdict['origin'] = InversionSets[IS]['OriginReach']['reach_id']
+                    
+                InversionSetWrite.append(reachdict)
+            InversionSetsList.append(InversionSetWrite)
+
+        return InversionSetsList, all_reaches
 
 
     def getsets(self) -> dict:

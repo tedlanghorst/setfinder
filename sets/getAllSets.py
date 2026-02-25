@@ -13,9 +13,11 @@ import numpy as np
 
 # Local imports
 try:
-    from sets import Sets
+    # from sets import Sets
+    from nx_sets import Sets
 except ImportError:
-    from sets.sets import Sets
+    # from sets.sets import Sets
+    from sets.nx_sets import Sets
 
 def generate_sets(reaches:list, continent:str, output_dir:str, algorithms:list, sword_dataset, sword_filepath:str, expanded:bool):
     """Main function for finding sets"""

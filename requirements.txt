@@ -1,9 +1,13 @@
 certifi==2024.7.4
 cftime==1.6.4
 netCDF4==1.7.1.post1
+networkx @ file:///opt/miniconda3/conda-bld/networkx_1765378632538/work
 numpy==2.0.0
+packaging @ file:///opt/miniconda3/conda-bld/packaging_1761049079150/work
 pandas==2.2.2
 python-dateutil==2.9.0.post0
 pytz==2024.1
+setuptools==80.10.2
 six==1.16.0
 tzdata==2024.1
+wheel==0.46.3

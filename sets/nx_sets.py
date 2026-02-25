@@ -16,7 +16,6 @@ import json
 import os
 
 import networkx as nx
-import numpy as np
 
 
 def is_river_reach(reach_id: int) -> bool:
@@ -54,10 +53,13 @@ def calc_overlap_frac(set_a: frozenset, set_b: frozenset) -> float:
 class Sets:
     """Divide a list of SWORD reaches into inversion sets."""
 
-    def __init__(self, params: dict, reaches: list[str], sword_dataset):
+    def __init__(self, params: dict, reaches: list, sword_dataset):
         self.params = params
-        self.reach_ids = {int(r) for r in reaches}
+        self.reaches = reaches 
+        self.reach_ids = {int(r["reach_id"]) for r in reaches}
         self.sword_dataset = sword_dataset
+
+        
 
     def _build_graph(self) -> nx.DiGraph:
         """
@@ -258,7 +260,9 @@ class Sets:
                 
         reaches_specified=[]
         for reach in self.reaches:
-            reaches_specified.append(reach['reach_id'])                                                
+            reaches_specified.append(reach['reach_id'])  
+
+        reaches_specified = [r["reach_id"] for r in self.reaches]                                              
         
         numOverlap=len( list( set(reaches_in_sets) & set(reaches_specified) ) )                            
         

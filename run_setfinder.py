@@ -59,7 +59,7 @@ def get_args():
                         '--sword_version',
                         help='Sword version number',
                         metavar='sword_version',
-                        type=int)
+                        type=str)
     
     parser.add_argument('-g', 
                         '--globalrun', 
@@ -119,7 +119,7 @@ def save_reach_list(outdir:str, reachesjson_dict:dict, continent_prefix:str, exp
         json.dump(reachesjson_dict, jsonfile, indent=2)
         print(f"File written: {output_filepath}")
 
-def parse_reach_list_for_output(reach_list:list, continent_prefix:str, sword_version:int, sword_file:str):
+def parse_reach_list_for_output(reach_list:list, continent_prefix:str, sword_version:str, sword_file:str):
 
     reach_dict_list = []
     for i in reach_list:

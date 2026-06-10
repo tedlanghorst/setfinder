@@ -101,7 +101,10 @@ def get_reach_list(indir:str, continent_prefix:str, continent_id_list:list, expa
         with open(os.path.join(indir, reach_subset_file)) as jsonfile:
             reaches_of_interest = json.load(jsonfile)
         
-        reach_list = [i for i in reaches_of_interest if str(i)[0] in continent_id_list]
+        if isinstance(reaches_of_interest[0], dict):
+            reach_list = [i['reach_id'] for i in reaches_of_interest if str(i['reach_id'])[0] in continent_id_list]
+        else:
+            reach_list = [i for i in reaches_of_interest if str(i)[0] in continent_id_list]
     else:
         reach_list = [os.path.basename(i).split('_')[0] for i in glob.glob(os.path.join(indir, 'swot', '*.nc')) if os.path.basename(i).split('_')[0][0] in continent_id_list]
 
